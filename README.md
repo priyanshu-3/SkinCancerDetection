@@ -1,7 +1,5 @@
 # Skin Cancer Detection using Deep CNN
 
-![Home Page Screenshot](screenshots/ss1.png)
-![Take a test Screenshot](screenshots/ss2.png)
 
 
 Skin Cancer Detection project is a sophisticated web application developed to detect skin cancer utilizing advanced deep learning techniques.
