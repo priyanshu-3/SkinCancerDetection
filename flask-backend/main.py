@@ -22,7 +22,10 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
-        file = request.files['image']
+        file = request.files.get('image')
+        if file is None:
+            return jsonify({"error": "No file provided with key 'image'"}), 400
+
         predicted_class_index, predicted_class_name, predicted_prob, image = predict_image(file)
 
         res = {
@@ -34,9 +37,10 @@ def predict():
 
 
 def predict_image(file):
-    # Read image
-    file_bytes = np.fromfile(file, np.uint8)
-    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    # Read image bytes safely from uploaded file
+    contents = file.read()
+    nparr = np.frombuffer(contents, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     # Preprocess image (resize and normalize)
     image = cv2.resize(image, (64, 64))
@@ -55,4 +59,4 @@ def predict_image(file):
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5001)
