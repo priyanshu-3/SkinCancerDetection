@@ -7,3 +7,29 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+/* Pure White Theme */
+html, body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+/* Ensure all main containers are white */
+#root {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+/* Button hover effects with subtle gray */
+.btn-primary:hover {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
+}
+
+/* Card styling with pale white accents */
+.card-pale-white {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #f3f4f6;
+    backdrop-filter: blur(10px);
+}

@@ -1,5 +1,4 @@
 import Page from "../components/Page.jsx";
-import loginImg from "../assets/login-bg.jpg";
 import TextInput from "../components/TextInput.jsx";
 import Button from "../components/Button.jsx";
 import {Link, Navigate, useLoaderData, useNavigate} from "react-router-dom";
@@ -49,10 +48,9 @@ function Login() {
     }
 
     return (
-        <Page className="grid grid-cols-2 auto-rows-[100vh]">
+        <Page className="flex items-center justify-center min-h-screen">
             {loading && <LoadingScreen />}
-            <img src={loginImg} className="hidden lg:block min-h-0 max-h-full w-full object-cover"/>
-            <div className="col-span-full lg:col-span-1 flex flex-col gap-3 items-center justify-center px-16 lg:px-20">
+            <div className="flex flex-col gap-3 items-center justify-center px-16 lg:px-20 max-w-md w-full">
                 <LogoAndName />
                 <h1 className="font-bold text-4xl lg:text-5xl mt-5 text-center">Welcome Back!</h1>
                 <p className="text-xl">Login to access your tests.</p>

@@ -1,6 +1,6 @@
 function Page({children, className}) {
     return (
-        <div className={`min-h-screen w-full bg-white-b-color ${className}`}>
+        <div className={`min-h-screen w-full bg-white ${className}`}>
             {children}
         </div>
     )

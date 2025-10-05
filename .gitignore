@@ -1,0 +1,37 @@
+# Node
+frontend/node_modules/
+backend/node_modules/
+**/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Backend uploads (user-submitted files)
+backend/uploads/
+
+# Python
+flask-backend/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Model training artifacts
+model-training/training_env/
+model-training/data/training_data/
+model-training/models/
+model-training/results/
+model-training/scripts/logs/
+model-training/scripts/models/
+model-training/scripts/results/
+
+# macOS
+.DS_Store
+
+# Env files
+.env
+*.env
+
+# Misc
+backend/node.out
+

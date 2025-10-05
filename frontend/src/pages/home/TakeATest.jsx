@@ -39,24 +39,19 @@ function TakeATest() {
     const handleGetResultsClick = (ev) => {
         setLoading(true);
 
-        axios.post(API_BASE_URL + TAKE_TEST_ROUTE, {
-            file
-        }, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+        const formData = new FormData();
+        formData.append('file', file);
+
+        axios.post(API_BASE_URL + TAKE_TEST_ROUTE, formData, {
             withCredentials: true
         }).then(response => {
-
             if (response.status >= 200 && response.status < 300) {
                 navigate("/test-results");
-            }
-            else
+            } else {
                 navigate("/");
-
+            }
             setLoading(false);
         }).catch(error => {
-
             setLoading(false);
         })
     }

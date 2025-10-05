@@ -6,7 +6,7 @@ function LogoAndName() {
     return (
         <Link to="/" className="font-semibold uppercase tracking-wide text-base lg:text-xl flex gap-2 items-center cursor-pointer">
             <img src={ribbonImg}/>
-            <span>Skin Cancer Awareness</span>
+            <span>Skin Cancer Detection</span>
         </Link>
     )
 }

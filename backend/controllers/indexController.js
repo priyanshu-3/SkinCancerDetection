@@ -4,10 +4,11 @@ const {generateJwtToken} = require("../services/auth");
 const {join, dirname} = require("path");
 const {readFileSync, createReadStream} = require("fs");
 const axios = require("axios");
+const FormData = require('form-data');
 const fs = require("fs");
 const { uuid } = require('uuidv4');
 
-const FLASK_SERVER_ENDPOINT = "http://localhost:5000/predict";
+const FLASK_SERVER_ENDPOINT = "http://localhost:5001/predict";
 
 async function handleSignUp(req, res) {
     if (!req.body.name || !req.body.email || !req.body.password)
@@ -92,35 +93,43 @@ async function handleAuthenticate(req, res) {
 }
 
 async function handleTakeTest(req, res) {
-    const filePath = join(dirname(__dirname) + '/uploads/' + req.file.filename);
-
-    const response = await axios.post(FLASK_SERVER_ENDPOINT, {
-        image: createReadStream(filePath)
-    }, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
         }
-    })
 
-    if (response.status === 200) {
-        const prediction = response.data;
+        const filePath = join(dirname(__dirname) + '/uploads/' + req.file.filename);
 
-        const doc = await User.findByIdAndUpdate(req.userId, {
-            image: readFileSync(filePath),
-            imageType: req.file.mimetype,
-            resultPredictedClass: prediction.predicted_class,
-            resultPredictedProb: prediction.prediction_probability
+        const form = new FormData();
+        form.append('image', createReadStream(filePath));
+
+        const response = await axios.post(FLASK_SERVER_ENDPOINT, form, {
+            headers: form.getHeaders(),
+            timeout: 15000
         });
 
-        return res.status(200).json({
-            msg: "Success"
-        });
+        if (response.status === 200) {
+            const prediction = response.data;
+
+            await User.findByIdAndUpdate(req.userId, {
+                image: readFileSync(filePath),
+                imageType: req.file.mimetype,
+                resultPredictedClass: prediction.predicted_class,
+                resultPredictedProb: prediction.prediction_probability
+            });
+
+            return res.status(200).json({
+                msg: "Success",
+                prediction
+            });
+        }
+
+        return res.status(502).json({ error: "Flask service returned non-200 response" });
+    } catch (error) {
+        console.error("/take-test error:", error?.response?.data || error?.message || error);
+        const status = error?.response?.status || 500;
+        return res.status(status).json({ error: "Failed to get prediction", details: error?.message });
     }
-
-    return res.status(500).json({
-        'msg': "Something went wrong"
-    });
-
 }
 
 async function handleTestResults(req, res) {

@@ -7,7 +7,11 @@ export default {
     theme: {
         extend: {
             colors: {
-                "white-b-color": "#ffffe3"
+                "white-b-color": "#ffffff",
+                "pale-white-50": "#ffffff",
+                "pale-white-100": "#ffffff",
+                "pale-white-200": "#ffffff",
+                "pale-white-300": "#ffffff"
             }
         },
     },
