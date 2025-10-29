@@ -156,58 +156,6 @@ export default function Login() {
               </Link>
             </div>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3 text-center">Demo Credentials:</h3>
-              <div className="space-y-2">
-                <div 
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => {
-                    setEmail('priyanshu@gmail.com')
-                    setPassword('admin123')
-                  }}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <i className="fas fa-user-md text-blue-600"></i>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Admin User</p>
-                      <p className="text-xs text-gray-500">priyanshu@gmail.com</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">Password:</p>
-                    <p className="text-sm font-mono text-gray-700">admin123</p>
-                  </div>
-                </div>
-
-                <div 
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => {
-                    setEmail('doctor@test.com')
-                    setPassword('doctor123')
-                  }}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <i className="fas fa-microscope text-green-600"></i>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Test Doctor</p>
-                      <p className="text-xs text-gray-500">doctor@test.com</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">Password:</p>
-                    <p className="text-sm font-mono text-gray-700">doctor123</p>
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-gray-500 text-center mt-3">
-                Click on any credential to auto-fill the form
-              </p>
-            </div>
           </div>
         </div>
 
