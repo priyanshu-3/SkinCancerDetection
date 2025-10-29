@@ -1017,7 +1017,8 @@ def analyze():
                 viz_path=f'/static/uploads/viz_{filename}',
                 report_path=response.get('report_path'),
                 all_predictions=json.dumps(prediction_result['all_predictions']),
-                llm_advice=llm_advice
+                llm_advice=llm_advice,
+                created_at=datetime.utcnow()  # Explicitly set the timestamp
             )
             db.session.add(analysis_record)
             db.session.commit()
