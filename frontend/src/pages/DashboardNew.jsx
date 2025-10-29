@@ -224,7 +224,7 @@ export default function DashboardNew() {
                               {analysis.confidence.toFixed(1)}%
                             </td>
                             <td className="py-3 px-4 text-sm text-gray-600">
-                              {new Date(analysis.created_at).toLocaleDateString()}
+                              {analysis.created_at ? new Date(analysis.created_at).toLocaleDateString() : 'N/A'}
                             </td>
                             <td className="py-3 px-4">
                               <button

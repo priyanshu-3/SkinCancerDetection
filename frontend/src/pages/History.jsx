@@ -454,7 +454,9 @@ export default function History() {
                         <div className="text-sm text-gray-900">{record.confidence.toFixed(1)}%</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{new Date(record.created_at).toLocaleString()}</div>
+                        <div className="text-sm text-gray-900">
+                          {record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
@@ -508,7 +510,7 @@ export default function History() {
                     <div><span className="font-medium">Age:</span> {selectedRecord.age}</div>
                     <div><span className="font-medium">Gender:</span> {selectedRecord.gender}</div>
                     <div><span className="font-medium">Location:</span> {selectedRecord.location || 'N/A'}</div>
-                    <div><span className="font-medium">Date:</span> {new Date(selectedRecord.created_at).toLocaleString()}</div>
+                    <div><span className="font-medium">Date:</span> {selectedRecord.created_at ? new Date(selectedRecord.created_at).toLocaleString() : 'N/A'}</div>
                   </div>
                 </div>
 

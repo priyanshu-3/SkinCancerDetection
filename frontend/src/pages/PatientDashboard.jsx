@@ -134,7 +134,7 @@ export default function PatientDashboard() {
         `"${analysis.location || ''}"`,
         `"${analysis.diagnosis || ''}"`,
         analysis.confidence ? (analysis.confidence / 100).toFixed(2) : '',
-        analysis.created_at ? new Date(analysis.created_at).toLocaleDateString() : ''
+        analysis.created_at ? new Date(analysis.created_at).toLocaleDateString() : 'N/A'
       ].join(','))
     ].join('\n')
     return csvContent
