@@ -185,8 +185,21 @@ export default function Dashboard() {
     if (!text) return ''
     
     return text
+      // Remove markdown headers (# ## ###)
+      .replace(/^#{1,3}\s*/gm, '')
+      // Remove bullet point markers (- and *)
+      .replace(/^[\-\*]\s*/gm, '')
+      // Convert *text** pattern (single asterisk start, double asterisk end) to bold
+      .replace(/\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      // Convert **text** to <strong>text</strong>
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\- (.*$)/gm, '<div class="flex items-start mb-2"><i class="fas fa-check-circle text-green-600 mr-2 mt-1"></i><div>$1</div></div>')
+      // Convert remaining single * to bold (if not already handled)
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<strong>$1</strong>')
+      // Remove single asterisk at start of line (like *Follow‑Up:)
+      .replace(/^\*\s*/gm, '')
+      // Remove warning emoji
+      .replace(/⚠️\s*/g, '')
+      // Handle line breaks
       .replace(/\n\n/g, '<br/><br/>')
       .replace(/\n/g, '<br/>')
   }

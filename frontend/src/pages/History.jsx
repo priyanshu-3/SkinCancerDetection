@@ -144,6 +144,29 @@ export default function History() {
     setTimeout(() => fetchHistory(), 100)
   }
 
+  const formatMarkdown = (text) => {
+    if (!text) return ''
+    
+    return text
+      // Remove markdown headers (# ## ###)
+      .replace(/^#{1,3}\s*/gm, '')
+      // Remove bullet point markers (- and *)
+      .replace(/^[\-\*]\s*/gm, '')
+      // Convert *text** pattern (single asterisk start, double asterisk end) to bold
+      .replace(/\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      // Convert **text** to <strong>text</strong>
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Convert remaining single * to bold (if not already handled)
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<strong>$1</strong>')
+      // Remove single asterisk at start of line (like *Follow‑Up:)
+      .replace(/^\*\s*/gm, '')
+      // Remove warning emoji
+      .replace(/⚠️\s*/g, '')
+      // Handle line breaks
+      .replace(/\n\n/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>')
+  }
+
   // Handle CSV export
   const handleExportCSV = async () => {
     try {
@@ -574,9 +597,10 @@ export default function History() {
                 {selectedRecord.llm_advice && (
                   <div className="md:col-span-2">
                     <h3 className="font-semibold text-gray-900 mb-3">Medical Insights</h3>
-                    <div className="bg-blue-50 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap">
-                      {selectedRecord.llm_advice}
-                    </div>
+                    <div 
+                      className="bg-blue-50 rounded-lg p-4 text-sm text-gray-700"
+                      dangerouslySetInnerHTML={{ __html: formatMarkdown(selectedRecord.llm_advice) }}
+                    />
                   </div>
                 )}
 

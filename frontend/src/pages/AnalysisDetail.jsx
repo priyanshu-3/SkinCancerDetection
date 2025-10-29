@@ -9,6 +9,29 @@ export default function AnalysisDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const formatMarkdown = (text) => {
+    if (!text) return ''
+    
+    return text
+      // Remove markdown headers (# ## ###)
+      .replace(/^#{1,3}\s*/gm, '')
+      // Remove bullet point markers (- and *)
+      .replace(/^[\-\*]\s*/gm, '')
+      // Convert *text** pattern (single asterisk start, double asterisk end) to bold
+      .replace(/\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      // Convert **text** to <strong>text</strong>
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Convert remaining single * to bold (if not already handled)
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<strong>$1</strong>')
+      // Remove single asterisk at start of line (like *Follow‑Up:)
+      .replace(/^\*\s*/gm, '')
+      // Remove warning emoji
+      .replace(/⚠️\s*/g, '')
+      // Handle line breaks
+      .replace(/\n\n/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>')
+  }
+
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
@@ -207,7 +230,7 @@ export default function AnalysisDetail() {
               <div 
                 className="text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ 
-                  __html: analysis.llm_advice.replace(/\n/g, '<br/>') 
+                  __html: formatMarkdown(analysis.llm_advice)
                 }}
               />
             </div>

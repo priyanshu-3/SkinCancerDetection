@@ -42,6 +42,29 @@ export default function Results() {
 
   const riskLevel = getRiskLevel(prediction.class)
 
+  const formatMarkdown = (text) => {
+    if (!text) return ''
+    
+    return text
+      // Remove markdown headers (# ## ###)
+      .replace(/^#{1,3}\s*/gm, '')
+      // Remove bullet point markers (- and *)
+      .replace(/^[\-\*]\s*/gm, '')
+      // Convert *text** pattern (single asterisk start, double asterisk end) to bold
+      .replace(/\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      // Convert **text** to <strong>text</strong>
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Convert remaining single * to bold (if not already handled)
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<strong>$1</strong>')
+      // Remove single asterisk at start of line (like *Follow‑Up:)
+      .replace(/^\*\s*/gm, '')
+      // Remove warning emoji
+      .replace(/⚠️\s*/g, '')
+      // Handle line breaks
+      .replace(/\n\n/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>')
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
@@ -170,7 +193,7 @@ export default function Results() {
               <div className="prose prose-sm max-w-none">
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: llm_insights.replace(/\n/g, '<br />'),
+                    __html: formatMarkdown(llm_insights),
                   }}
                 />
               </div>

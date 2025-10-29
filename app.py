@@ -99,34 +99,63 @@ def parse_markdown_for_pdf(text):
             # Remove these characters
             line = re.sub(r'[█▀▄▌▐░▒▓■□▪▫]', '', line)
         
-        # Check for headers (## or ###)
+        # Check for headers (## or ###) - remove markdown headers
         if line.startswith('### '):
             content = line[4:].strip()
-            # Remove bold markers
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)
+            # Keep bold text as bold markers for PDF rendering
             parsed_content.append({'type': 'header3', 'content': content})
         elif line.startswith('## '):
             content = line[3:].strip()
-            # Remove bold markers
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)
+            # Keep bold text as bold markers for PDF rendering
             parsed_content.append({'type': 'header2', 'content': content})
-        # Check for bullet points
+        # Check for bullet points - remove bullet markers
         elif line.startswith('- ') or line.startswith('* '):
             content = line[2:].strip()
-            # Remove bold markers
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)
+            # Keep bold text as bold markers for PDF rendering
             parsed_content.append({'type': 'bullet', 'content': content})
         # Check for disclaimer
         elif line.startswith('**Disclaimer:**') or 'Disclaimer' in line:
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
-            parsed_content.append({'type': 'disclaimer', 'content': content})
+            # Keep bold text as bold markers for PDF rendering
+            parsed_content.append({'type': 'disclaimer', 'content': line})
         # Regular text
         else:
-            # Remove bold markers from regular text
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
-            parsed_content.append({'type': 'text', 'content': content})
+            # Keep bold text as bold markers for PDF rendering
+            parsed_content.append({'type': 'text', 'content': line})
     
     return parsed_content
+
+
+def draw_text_with_bold(canvas_obj, text, x, y, font_name, font_size, max_width):
+    """Draw text with bold formatting where **text** and *text** patterns appear"""
+    import re
+    
+    # First handle *text** pattern (single asterisk start, double asterisk end)
+    text = re.sub(r'\*([^*]+)\*\*', r'**\1**', text)
+    
+    # Remove single asterisk at start of line (like *Follow‑Up:)
+    text = re.sub(r'^\*\s*', '', text, flags=re.MULTILINE)
+    
+    # Remove warning emoji
+    text = re.sub(r'⚠️\s*', '', text)
+    
+    # Split text by ** markers
+    parts = re.split(r'(\*\*.*?\*\*)', text)
+    current_x = x
+    
+    for part in parts:
+        if part.startswith('**') and part.endswith('**'):
+            # Bold text - remove ** markers
+            bold_text = part[2:-2]
+            canvas_obj.setFont('Helvetica-Bold', font_size)
+            canvas_obj.drawString(current_x, y, bold_text)
+            current_x += canvas_obj.stringWidth(bold_text, 'Helvetica-Bold', font_size)
+        else:
+            # Regular text
+            canvas_obj.setFont(font_name, font_size)
+            canvas_obj.drawString(current_x, y, part)
+            current_x += canvas_obj.stringWidth(part, font_name, font_size)
+    
+    return current_x
 
 
 def draw_markdown_content(canvas_obj, content_list, start_y, margin, max_width, page_height):
@@ -149,13 +178,15 @@ def draw_markdown_content(canvas_obj, content_list, start_y, margin, max_width, 
         elif content_type == 'header2':
             canvas_obj.setFont('Helvetica-Bold', 11)
             canvas_obj.setFillColor(colors.HexColor('#1e40af'))  # Blue color
-            canvas_obj.drawString(margin, y, content)
+            # Use bold text rendering for headers
+            draw_text_with_bold(canvas_obj, content, margin, y, 'Helvetica-Bold', 11, max_width)
             canvas_obj.setFillColor(colors.black)
             y -= 6 * mm
             
         elif content_type == 'header3':
             canvas_obj.setFont('Helvetica-Bold', 10)
-            canvas_obj.drawString(margin, y, content)
+            # Use bold text rendering for headers
+            draw_text_with_bold(canvas_obj, content, margin, y, 'Helvetica-Bold', 10, max_width)
             y -= 5 * mm
             
         elif content_type == 'bullet':
@@ -163,17 +194,17 @@ def draw_markdown_content(canvas_obj, content_list, start_y, margin, max_width, 
             canvas_obj.setFont('Helvetica', 9)
             canvas_obj.circle(margin + 2 * mm, y + 1.5 * mm, 0.8 * mm, fill=1)
             
-            # Wrap text for bullet points
+            # Wrap text for bullet points with bold support
             wrapped_lines = wrap_text(content, max_width - 8 * mm, canvas_obj, 'Helvetica', 9)
             for i, wrapped_line in enumerate(wrapped_lines):
                 if i == 0:
-                    canvas_obj.drawString(margin + 5 * mm, y, wrapped_line)
+                    draw_text_with_bold(canvas_obj, wrapped_line, margin + 5 * mm, y, 'Helvetica', 9, max_width - 8 * mm)
                 else:
                     y -= line_height
                     if y < 40 * mm:
                         canvas_obj.showPage()
                         y = page_height - 30 * mm
-                    canvas_obj.drawString(margin + 5 * mm, y, wrapped_line)
+                    draw_text_with_bold(canvas_obj, wrapped_line, margin + 5 * mm, y, 'Helvetica', 9, max_width - 8 * mm)
             y -= 5 * mm
             
         elif content_type == 'disclaimer':
@@ -184,7 +215,7 @@ def draw_markdown_content(canvas_obj, content_list, start_y, margin, max_width, 
                 if y < 40 * mm:
                     canvas_obj.showPage()
                     y = page_height - 30 * mm
-                canvas_obj.drawString(margin, y, wrapped_line)
+                draw_text_with_bold(canvas_obj, wrapped_line, margin, y, 'Helvetica-Bold', 9, max_width)
                 y -= line_height
             canvas_obj.setFillColor(colors.black)
             y -= 2 * mm
@@ -196,7 +227,7 @@ def draw_markdown_content(canvas_obj, content_list, start_y, margin, max_width, 
                 if y < 40 * mm:
                     canvas_obj.showPage()
                     y = page_height - 30 * mm
-                canvas_obj.drawString(margin, y, wrapped_line)
+                draw_text_with_bold(canvas_obj, wrapped_line, margin, y, 'Helvetica', 9, max_width)
                 y -= line_height
             y -= 2 * mm
     
