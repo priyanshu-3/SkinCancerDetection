@@ -280,7 +280,7 @@ export default function History() {
                 <div className="bg-purple-50 rounded-lg p-4 border-l-4 border-purple-500">
                   <div className="text-sm text-purple-600 font-medium">Latest Analysis</div>
                   <div className="text-lg font-bold text-purple-900 mt-1">
-                    {stats.latest_date ? new Date(stats.latest_date).toLocaleDateString() : 'N/A'}
+                    {stats.latest_date ? new Date(stats.latest_date).toLocaleString() : 'N/A'}
                   </div>
                 </div>
               </div>
